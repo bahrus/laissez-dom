@@ -10,13 +10,13 @@ export class LaissezDOM extends HTMLElement {
         //     minHeight: '25px',
         //     display: 'block'
         // } as CSSStyleDeclaration);
-        this.style.minHeight = '25px';
-        const ioi = {
-            root: this.parentElement,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-        this._observer = new IntersectionObserver(this.callback.bind(this), ioi);
+        //this.style.minHeight = '25px';
+        // const ioi : IntersectionObserverInit = {
+        //     root: this.parentElement,
+        //     rootMargin: '0px',
+        //     threshold: 0.1
+        // };
+        this._observer = new IntersectionObserver(this.callback.bind(this));
         this._observer.observe(this);
     }
     disconnectedCallback() {
@@ -33,17 +33,24 @@ export class LaissezDOM extends HTMLElement {
         //this._cloned = true;
     }
     callback(entries, observer) {
-        if (!this._cloned) {
-            this._cloned = true;
-            window.requestAnimationFrame(() => {
-                this.cloneTemplate();
-            });
+        //console.log(entries);
+        console.log(entries[0].intersectionRatio);
+        const first = entries[0];
+        if (first.intersectionRatio > 0) {
+            if (!this._cloned) {
+                this._cloned = true;
+                window.requestAnimationFrame(() => {
+                    this.cloneTemplate();
+                });
+            }
+            else {
+            }
         }
-        console.log({
-            this: this,
-            entries: entries,
-            observer: observer
-        });
+        else if (this._cloned) {
+            // Array.from(this.children).forEach(child => {
+            //     (child as HTMLElement).style.display = 'none';
+            // });
+        }
     }
 }
 define(LaissezDOM);
