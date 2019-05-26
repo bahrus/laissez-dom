@@ -11,13 +11,13 @@ export class LaissezDOM extends HTMLElement{
 
         // } as CSSStyleDeclaration);
         //this.style.minHeight = '25px';
-        // const ioi : IntersectionObserverInit = {
-        //     root: this.parentElement,
-        //     rootMargin: '0px',
-        //     threshold: 0.1
+        const ioi : IntersectionObserverInit = {
+            //root: this.parentElement,
+            //rootMargin: '0px',
+            threshold: 0.5
 
-        // };
-        this._observer = new IntersectionObserver(this.callback.bind(this));
+        };
+        this._observer = new IntersectionObserver(this.callback.bind(this), ioi);
         this._observer.observe(this);
     }
 
@@ -30,29 +30,35 @@ export class LaissezDOM extends HTMLElement{
             setTimeout(() => this.cloneTemplate(), 50);
             return;
         }
-        this.appendChild(templ.content.cloneNode(true));
+        //const div = document.createElement('div');
+        //div.appendChild(templ.content.cloneNode(true));
         templ.remove();
+        this.appendChild(templ.content.cloneNode(true));
+        //this._div = div;
         //this._cloned = true;
     }
-
+    //_div!: HTMLDivElement
     callback(entries: any, observer: any){
         //console.log(entries);
-        console.log(entries[0].intersectionRatio);
+        //console.log(entries[0].intersectionRatio);
         const first = entries[0];
+        if(entries.length > 1){
+            console.log(entries.length);
+        }
         if(first.intersectionRatio > 0){
             if(!this._cloned){
                 this._cloned = true;
                 window.requestAnimationFrame(() =>{
                     this.cloneTemplate();
                 })
-            }else{
-
             }
-        }else if(this._cloned){
-            // Array.from(this.children).forEach(child => {
-            //     (child as HTMLElement).style.display = 'none';
-            // });
         }
+            // }else{
+            //     this._div.style.display = 'block';
+            // }
+        // }else if(this._cloned){
+        //     this._div.style.display = 'none';
+        // }
 
 
     }
