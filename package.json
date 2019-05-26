@@ -1,0 +1,19 @@
+{
+  "name": "laissez-dom",
+  "version": "0.0.0",
+  "description": "TBD",
+  "main": "laissez-dom.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahrus/laissez-dom.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bahrus/laissez-dom/issues"
+  },
+  "homepage": "https://github.com/bahrus/laissez-dom#readme"
+}
