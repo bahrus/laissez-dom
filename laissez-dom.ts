@@ -1,4 +1,5 @@
 import {define} from 'trans-render/define.js';
+import {RenderContext} from 'trans-render/init.d.js';
 export class LaissezDOM extends HTMLElement{
     static get is(){return 'laissez-dom';}
 
@@ -21,44 +22,52 @@ export class LaissezDOM extends HTMLElement{
         this._observer.observe(this);
     }
 
+    _renderContexts: RenderContext[] | undefined;
+    addRenderContext(rc: RenderContext){
+        if(this._renderContexts === undefined) this._renderContexts = [];
+        this._renderContexts.push(rc);
+    }
+
     disconnectedCallback(){
         this._observer.disconnect();
     }
-    cloneTemplate(){
+    initTemplate(){
         const templ = this.querySelector('template');
         if(templ === null){
-            setTimeout(() => this.cloneTemplate(), 50);
+            setTimeout(() => this.initTemplate(), 50);
             return;
         }
         //const div = document.createElement('div');
         //div.appendChild(templ.content.cloneNode(true));
+        const clone = templ.content.cloneNode(true);
+
+        this.appendChild(clone);
         templ.remove();
-        this.appendChild(templ.content.cloneNode(true));
-        //this._div = div;
-        //this._cloned = true;
+        if(this._renderContexts !== undefined){
+            this._renderContexts.forEach(rc =>{
+                if(rc.init !== undefined){
+                    rc.init(this, rc, this);
+                }
+                
+            })
+        }
     }
     //_div!: HTMLDivElement
     callback(entries: any, observer: any){
         //console.log(entries);
         //console.log(entries[0].intersectionRatio);
         const first = entries[0];
-        if(entries.length > 1){
-            console.log(entries.length);
-        }
         if(first.intersectionRatio > 0){
             if(!this._cloned){
                 this._cloned = true;
                 window.requestAnimationFrame(() =>{
-                    this.cloneTemplate();
+                    this.initTemplate();
                 })
             }
+            this.removeAttribute('nv');
+        }else{
+            this.setAttribute('nv', '');
         }
-            // }else{
-            //     this._div.style.display = 'block';
-            // }
-        // }else if(this._cloned){
-        //     this._div.style.display = 'none';
-        // }
 
 
     }
