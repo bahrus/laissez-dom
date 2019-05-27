@@ -1,6 +1,6 @@
 {
   "name": "laissez-dom",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Lazy load templates",
   "main": "laissez-dom.js",
   "module": "laissez-dom.js",
