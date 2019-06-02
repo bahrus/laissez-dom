@@ -15,7 +15,7 @@ export class LaissezDOM extends HTMLElement{
         const ioi : IntersectionObserverInit = {
             //root: this.parentElement,
             //rootMargin: '0px',
-            threshold: 0.5
+            threshold: 0.01
 
         };
         this._observer = new IntersectionObserver(this.callback.bind(this), ioi);

@@ -19,7 +19,7 @@
         }
 
         [nv] {
-            visibility: hidden; 
+            visibility: hidden;
         }
         details>laissez-dom>section{
             margin-left:20px;
@@ -32,7 +32,7 @@
         }
 
     </style>
-    <div style="display:block;overflow-y:scroll;height:50vw">
+    <div style="display:block;overflow-y:scroll;height:100vw">
             <iframe style="display:none" src="directory.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
     </div>
 
@@ -40,11 +40,11 @@
     <script type="importmap-shim">
     {
         "imports": {
-            "xtal-element/": "../node_modules/xtal-element/",
-            "trans-render/": "../node_modules/trans-render/",
+            "xtal-element/": "https://cdn.jsdelivr.net/npm/xtal-element@0.0.59/",
+            "trans-render/": "https://cdn.jsdelivr.net/npm/trans-render@0.0.112/",
             "xtal-sip": "https://cdn.jsdelivr.net/npm/xtal-sip@0.0.87/xtal-sip.js",
             "p-d": "https://cdn.jsdelivr.net/npm/p-d.p-u@0.0.123/p-d.js",
-            "laissez-dom": "../laissez-dom.js"
+            "laissez-dom": "https://cdn.jsdelivr.net/npm/laissez-dom@0.0.2/laissez-dom.js"
         }
     }
     </script>
