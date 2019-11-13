@@ -32,6 +32,7 @@ export class LaissezDOM extends HTMLElement{
         this._observer.disconnect();
     }
     initTemplate(){
+
         const templ = this.querySelector('template');
         if(templ === null){
             setTimeout(() => this.initTemplate(), 50);
@@ -58,15 +59,25 @@ export class LaissezDOM extends HTMLElement{
         //console.log(entries[0].intersectionRatio);
         const first = entries[0];
         if(first.intersectionRatio > 0){
-            if(!this._cloned){
+            if(!this._cloned && !this.hasAttribute('noclone')){
                 this._cloned = true;
                 window.requestAnimationFrame(() =>{
                     this.initTemplate();
                 })
             }
+            if(this.hasAttribute('toggle-disabled')){
+                Array.from(this.children).forEach(child =>{
+                    child.removeAttribute('disabled');
+                })
+            }
             this.removeAttribute('nv');
         }else{
             this.setAttribute('nv', '');
+            if(this.hasAttribute('toggle-disabled')){
+                Array.from(this.children).forEach(child =>{
+                    child.setAttribute('disabled', '');
+                })
+            }
         }
 
 
