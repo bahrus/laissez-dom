@@ -6,14 +6,7 @@ export class LaissezDOM extends HTMLElement {
     }
     static get is() { return 'laissez-dom'; }
     connectedCallback() {
-        // Object.assign(this.style, {
-        //     minHeight: '25px',
-        //     display: 'block'
-        // } as CSSStyleDeclaration);
-        //this.style.minHeight = '25px';
         const ioi = {
-            //root: this.parentElement,
-            //rootMargin: '0px',
             threshold: 0.01
         };
         this._observer = new IntersectionObserver(this.callback.bind(this), ioi);
@@ -33,8 +26,6 @@ export class LaissezDOM extends HTMLElement {
             setTimeout(() => this.initTemplate(), 50);
             return;
         }
-        //const div = document.createElement('div');
-        //div.appendChild(templ.content.cloneNode(true));
         const clone = templ.content.cloneNode(true);
         this.appendChild(clone);
         templ.remove();
@@ -47,8 +38,6 @@ export class LaissezDOM extends HTMLElement {
         }
     }
     callback(entries, observer) {
-        //console.log(entries);
-        //console.log(entries[0].intersectionRatio);
         const first = entries[0];
         if (first.intersectionRatio > 0) {
             if (!this._cloned && !this.hasAttribute('noclone')) {
