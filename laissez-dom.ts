@@ -53,7 +53,7 @@ export class LaissezDOM extends HTMLElement{
             })
         }
     }
-    //_div!: HTMLDivElement
+    
     callback(entries: any, observer: any){
         //console.log(entries);
         //console.log(entries[0].intersectionRatio);
@@ -67,7 +67,20 @@ export class LaissezDOM extends HTMLElement{
             }
             if(this.hasAttribute('toggle-disabled')){
                 Array.from(this.children).forEach(child =>{
-                    child.removeAttribute('disabled');
+                    const currVal = child.getAttribute('disabled');
+                    if(currVal === null) return;
+                    if(currVal === '' || currVal === '1' || isNaN(currVal as any as number)){
+                        child.removeAttribute('disabled');
+                    }else{
+                        const currValN = parseInt(currVal);
+                        if(currValN > 0){
+                            child.setAttribute('disabled', (currValN - 1).toString());
+                        }else{
+                            child.removeAttribute('disabled');
+                        }
+                    }
+                    
+                    
                 })
             }
             this.removeAttribute('nv');
@@ -75,7 +88,11 @@ export class LaissezDOM extends HTMLElement{
             this.setAttribute('nv', '');
             if(this.hasAttribute('toggle-disabled')){
                 Array.from(this.children).forEach(child =>{
-                    child.setAttribute('disabled', '');
+                    const currVal = child.getAttribute('disabled');
+                    const isN = isNaN(currVal as any as number);
+                    let newVal = currVal === null || currVal === '' ? '1' : 
+                        isN ? (parseInt(currVal) + 1).toString() : ''
+                    child.setAttribute('disabled', newVal);
                 })
             }
         }
