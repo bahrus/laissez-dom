@@ -23,11 +23,6 @@ const propDefGetter = [
         type: Boolean,
         reflect: true,
         dry: true
-    }),
-    ({ threshold }) => ({
-        type: Number,
-        reflect: true,
-        dry: true
     })
 ];
 const propDefs = getPropDefs(propDefGetter);
@@ -37,7 +32,7 @@ const linkObserver = ({ threshold, self }) => {
     const ioi = {
         threshold: 0.01
     };
-    self.observer = new IntersectionObserver(self.callback.bind(self), ioi);
+    self.observer = new IntersectionObserver(self.callback.bind(this), ioi);
     self.observer.observe(self);
 };
 const linkClonedTemplate = ({ isVisible, isCloned, toggleDisabled, self }) => {
@@ -73,60 +68,58 @@ const linkClonedTemplate = ({ isVisible, isCloned, toggleDisabled, self }) => {
                 }
             }
         }
-        else {
-            for (const child of children) {
-                const currVal = child.getAttribute('disabled');
-                const isN = isNaN(currVal);
-                let newVal = currVal === null || currVal === '' ? '1' :
-                    isN ? (parseInt(currVal) + 1).toString() : '';
-                child.setAttribute('disabled', newVal);
+    }
+    const appendClone = ({ clonedTemplate, templateClonedCallback, toggleDisabled, self }) => {
+        if (templateClonedCallback !== undefined) {
+            templateClonedCallback(clonedTemplate);
+        }
+        self.appendChild(clonedTemplate);
+        if (!toggleDisabled)
+            self.observer.disconnect;
+        self.isCloned = true;
+    };
+    const propActions = [
+        linkObserver,
+        linkClonedTemplate,
+        appendClone
+    ];
+    export class LaissezDOM extends HTMLElement {
+        constructor() {
+            super(...arguments);
+            this.propActions = propActions;
+            this.reactor = new Reactor(this);
+            this.self = this;
+        }
+        connectedCallback() {
+            hydrate(this, propDefs, {
+                threshold: 0.01
+            });
+        }
+        disconnectedCallback() {
+            if (this.observer !== undefined)
+                this.observer.disconnect();
+        }
+        callback(entries, observer) {
+            const first = entries[0];
+            if (first.intersectionRatio > 0) {
+                this.isVisible = true;
+            }
+            else {
+                this.isVisible = false;
+                this.setAttribute('nv', '');
+                if (this.hasAttribute('toggle-disabled')) {
+                    Array.from(this.children).forEach(child => {
+                        const currVal = child.getAttribute('disabled');
+                        const isN = isNaN(currVal);
+                        let newVal = currVal === null || currVal === '' ? '1' :
+                            isN ? (parseInt(currVal) + 1).toString() : '';
+                        child.setAttribute('disabled', newVal);
+                    });
+                }
             }
         }
     }
+    LaissezDOM.is = 'laissez-dom';
+    letThereBeProps(LaissezDOM, propDefs);
+    define(LaissezDOM);
 };
-const appendClone = ({ clonedTemplate, templateClonedCallback, toggleDisabled, self }) => {
-    if (templateClonedCallback !== undefined) {
-        templateClonedCallback(clonedTemplate);
-    }
-    self.appendChild(clonedTemplate);
-    if (!toggleDisabled)
-        self.observer.disconnect;
-    self.isCloned = true;
-};
-const propActions = [
-    linkObserver,
-    linkClonedTemplate,
-    appendClone
-];
-export class LaissezDOM extends HTMLElement {
-    constructor() {
-        super(...arguments);
-        this.propActions = propActions;
-        this.reactor = new Reactor(this);
-        this.self = this;
-    }
-    connectedCallback() {
-        hydrate(this, propDefs, {
-            threshold: 0.01
-        });
-    }
-    onPropChange(name, prop, nv) {
-        this.reactor.addToQueue(prop, nv);
-    }
-    disconnectedCallback() {
-        if (this.observer !== undefined)
-            this.observer.disconnect();
-    }
-    callback(entries, observer) {
-        const first = entries[0];
-        if (first.intersectionRatio > 0) {
-            this.isVisible = true;
-        }
-        else {
-            this.isVisible = false;
-        }
-    }
-}
-LaissezDOM.is = 'laissez-dom';
-letThereBeProps(LaissezDOM, propDefs, 'onPropChange');
-define(LaissezDOM);
