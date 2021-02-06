@@ -1,36 +1,4 @@
-import { define } from 'xtal-element/lib/define.js';
-import { getPropDefs } from 'xtal-element/lib/getPropDefs.js';
-import { letThereBeProps } from 'xtal-element/lib/letThereBeProps.js';
-import { Reactor } from 'xtal-element/lib/Reactor.js';
-import { hydrate } from 'xtal-element/lib/hydrate.js';
-const propDefGetter = [
-    ({ templateClonedCallback }) => ({
-        type: Object,
-        dry: true,
-        stopReactionsIfFalsy: true
-    }),
-    ({ clonedTemplate }) => ({
-        type: Object,
-        dry: true,
-        stopReactionsIfFalsy: true,
-        notify: true,
-    }),
-    ({ noclone }) => ({
-        type: Boolean,
-        dry: true
-    }),
-    ({ isVisible }) => ({
-        type: Boolean,
-        reflect: true,
-        dry: true
-    }),
-    ({ threshold }) => ({
-        type: Number,
-        reflect: true,
-        dry: true
-    })
-];
-const propDefs = getPropDefs(propDefGetter);
+import { xc } from 'xtal-element/lib/XtalCore.js';
 const linkObserver = ({ threshold, self }) => {
     if (self.observer !== undefined)
         self.observer.disconnect();
@@ -102,11 +70,11 @@ export class LaissezDOM extends HTMLElement {
     constructor() {
         super(...arguments);
         this.propActions = propActions;
-        this.reactor = new Reactor(this);
+        this.reactor = new xc.Rx(this);
         this.self = this;
     }
     connectedCallback() {
-        hydrate(this, propDefs, {
+        xc.hydrate(this, slicedPropDefs, {
             threshold: 0.01
         });
     }
@@ -128,5 +96,32 @@ export class LaissezDOM extends HTMLElement {
     }
 }
 LaissezDOM.is = 'laissez-dom';
-letThereBeProps(LaissezDOM, propDefs, 'onPropChange');
-define(LaissezDOM);
+const propDefMap = {
+    templateClonedCallback: {
+        type: Object,
+        dry: true,
+    },
+    clonedTemplate: {
+        type: Object,
+        dry: true,
+        stopReactionsIfFalsy: true,
+        notify: true,
+    },
+    noclone: {
+        type: Boolean,
+        dry: true
+    },
+    isVisible: {
+        type: Boolean,
+        reflect: true,
+        dry: true
+    },
+    threshold: {
+        type: Number,
+        reflect: true,
+        dry: true
+    }
+};
+const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+xc.letThereBeProps(LaissezDOM, slicedPropDefs.propDefs, 'onPropChange');
+xc.define(LaissezDOM);

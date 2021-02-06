@@ -1,40 +1,5 @@
-import {define} from 'xtal-element/lib/define.js';
-import {getPropDefs} from 'xtal-element/lib/getPropDefs.js';
-import {getSlicedPropDefs} from 'xtal-element/lib/getSlicedPropDefs.js';
-import {destructPropInfo, ReactiveSurface, PropAction, PropDef} from 'xtal-element/types.d.js';
 import {ClonedTemplateCallback, LaissezDOMProps} from './types.js';
-import {letThereBeProps} from 'xtal-element/lib/letThereBeProps.js';
-import {Reactor} from 'xtal-element/lib/Reactor.js';
-import {hydrate} from 'xtal-element/lib/hydrate.js';
-
-const propDefGetter = [
-    ({templateClonedCallback}: LaissezDOM) => ({
-        type: Object,
-        dry: true,
-        stopReactionsIfFalsy: true
-    }),
-    ({clonedTemplate}: LaissezDOM) => ({
-        type: Object,
-        dry: true,
-        stopReactionsIfFalsy: true,
-        notify: true,
-    }),
-    ({noclone}: LaissezDOM) => ({
-        type: Boolean,
-        dry: true
-    }),
-    ({isVisible}: LaissezDOM) => ({
-        type: Boolean,
-        reflect: true,
-        dry: true
-    }),
-    ({threshold}: LaissezDOM) => ({
-        type: Number,
-        reflect: true,
-        dry: true
-    })
-] as destructPropInfo[];
-const propDefs = getPropDefs(propDefGetter);
+import {xc, ReactiveSurface, PropAction, PropDef, PropDefMap} from 'xtal-element/lib/XtalCore.js';
 
 const linkObserver = ({threshold, self}: LaissezDOM) => {
     if(self.observer !== undefined) self.observer.disconnect();
@@ -102,7 +67,7 @@ export class LaissezDOM extends HTMLElement implements ReactiveSurface, LaissezD
     static is = 'laissez-dom';
     propActions = propActions;
     observer: IntersectionObserver | undefined;
-    reactor = new Reactor(this);
+    reactor = new xc.Rx(this);
     self = this;
     templateClonedCallback: ClonedTemplateCallback | undefined;
     isCloned: boolean | undefined;
@@ -112,7 +77,7 @@ export class LaissezDOM extends HTMLElement implements ReactiveSurface, LaissezD
     noclone: boolean | undefined;
     toggleDisabled: boolean | undefined;
     connectedCallback(){
-        hydrate<LaissezDOMProps>(this, propDefs, {
+        xc.hydrate<LaissezDOMProps>(this, slicedPropDefs, {
             threshold: 0.01
         });
     }
@@ -135,5 +100,33 @@ export class LaissezDOM extends HTMLElement implements ReactiveSurface, LaissezD
 
     }
 }
-letThereBeProps(LaissezDOM, propDefs, 'onPropChange')
-define(LaissezDOM);
+const propDefMap: PropDefMap<LaissezDOM> = {
+    templateClonedCallback: {
+        type: Object,
+        dry: true,
+    },
+    clonedTemplate: {
+        type: Object,
+        dry: true,
+        stopReactionsIfFalsy: true,
+        notify: true,
+    },
+    noclone: {
+        type: Boolean,
+        dry: true
+    },
+    isVisible: {
+        type: Boolean,
+        reflect: true,
+        dry: true
+    },
+    threshold: {
+        type: Number,
+        reflect: true,
+        dry: true
+    }
+}
+
+const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+xc.letThereBeProps(LaissezDOM, slicedPropDefs.propDefs, 'onPropChange');
+xc.define(LaissezDOM);
