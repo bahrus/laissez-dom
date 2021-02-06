@@ -6,6 +6,43 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <ul id=ul></ul>
+    <script defer src="../node_modules/es-module-shims/dist/es-module-shims.js"></script>
+    <script type="importmap-shim">
+    {
+        "imports": {
+            "xtal-element/": "../node_modules/xtal-element/",
+            "trans-render/": "../node_modules/trans-render/",
+            "p-d": "https://cdn.jsdelivr.net/npm/p-d.p-u@0.0.123/p-d.js"
+        }
+    }
+    </script>
+    <script type="module-shim">
+        import '../laissez-dom.js';
+    </script>
+    <!-- <template id=test>
+        <laissez-dom>
+            <template>
+                <li></li>
+            </template>
+        </laissez-dom>
+    </template> -->
+    <script>
+        const list = [];
+        const start1 = performance.now();
+        let ld = document.createElement('laissez-dom');
+        for(let i = 0; i < 100000; i++){
+           if(i % 1000 === 999){
+            ul.appendChild(ld);
+            ld = document.createElement('laissez-dom');
+           }
+           const li = document.createElement('li');
+           li.textContent = 'hello ' + i;
+           ld.appendChild(li);
+        }
+        const end1 = performance.now();
+        console.log(end1 - start1);
+        
+    </script>
 </body>
 </html>
