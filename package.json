@@ -9,7 +9,7 @@
     "serve": "node node_modules/xtal-test/serve.js"
   },
   "dependencies": {
-    "xtal-element": "0.0.321"
+    "xtal-element": "0.0.341"
   },
   "devDependencies": {
     "es-module-shims": "0.8.0",
