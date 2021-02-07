@@ -31,14 +31,20 @@
         const list = [];
         const start1 = performance.now();
         let ld = document.createElement('laissez-dom');
+        let temp = document.createElement('template');
+        ld.appendChild(temp);
+        let lis = [];
         for(let i = 0; i < 100000; i++){
            if(i % 1000 === 999){
+            temp.innerHTML = lis.join('');
+            lis = [];
             ul.appendChild(ld);
             ld = document.createElement('laissez-dom');
+            temp = document.createElement('template');
+            ld.appendChild(temp);
            }
-           const li = document.createElement('li');
-           li.textContent = 'hello ' + i;
-           ld.appendChild(li);
+           lis.push(/* html */`<li>hello ${i}</li>`);
+           
         }
         const end1 = performance.now();
         console.log(end1 - start1);

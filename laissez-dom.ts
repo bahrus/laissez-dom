@@ -77,9 +77,21 @@ export class LaissezDOM extends HTMLElement implements ReactiveSurface, LaissezD
     noclone: boolean | undefined;
     toggleDisabled: boolean | undefined;
     connectedCallback(){
-        xc.hydrate<LaissezDOMProps>(this, slicedPropDefs, {
-            threshold: 0.01
-        });
+        this.style.minHeight = '120px';
+        this.style.display = 'block';
+        const prev = this.previousElementSibling;
+        // if(prev !== null && prev.localName === LaissezDOM.is){
+            setTimeout (() => {
+                xc.hydrate<LaissezDOMProps>(this, slicedPropDefs, {
+                    threshold: 0.01
+                });
+            }, 100);
+        // }else{
+            // xc.hydrate<LaissezDOMProps>(this, slicedPropDefs, {
+            //     threshold: 0.01
+            // });            
+        //}
+
     }
     onPropChange(name: string, prop: PropDef, nv: any){
         this.reactor.addToQueue(prop, nv);
