@@ -18,6 +18,7 @@ const linkClonedTemplate = ({ isVisible, isCloned, toggleDisabled, self }) => {
             return;
         }
         const clone = templ.content.cloneNode(true);
+        self.template = templ;
         self.clonedTemplate = clone;
     }
     else {
@@ -60,6 +61,8 @@ const appendClone = ({ clonedTemplate, templateClonedCallback, toggleDisabled, s
     if (!toggleDisabled)
         self.observer.disconnect;
     self.isCloned = true;
+    delete self.clonedTemplate;
+    self.template.remove();
 };
 const propActions = [
     linkObserver,
@@ -74,15 +77,15 @@ export class LaissezDOM extends HTMLElement {
         this.self = this;
     }
     connectedCallback() {
-        this.style.minHeight = '120px';
-        this.style.display = 'block';
+        //this.style.minHeight = '1000px';
+        //this.style.display = 'block';
         const prev = this.previousElementSibling;
         // if(prev !== null && prev.localName === LaissezDOM.is){
-        setTimeout(() => {
-            xc.hydrate(this, slicedPropDefs, {
-                threshold: 0.01
-            });
-        }, 100);
+        // setTimeout (() => {
+        xc.hydrate(this, slicedPropDefs, {
+            threshold: 0.01
+        });
+        // }, 0);
         // }else{
         // xc.hydrate<LaissezDOMProps>(this, slicedPropDefs, {
         //     threshold: 0.01

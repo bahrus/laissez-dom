@@ -19,7 +19,9 @@ const linkClonedTemplate = ({isVisible, isCloned, toggleDisabled, self}: Laissez
         }
         
         const clone = templ.content.cloneNode(true);
+        self.template = templ;
         self.clonedTemplate = clone as DocumentFragment;
+        
     }else{
         const children = Array.from(self.children);
         if(isVisible){
@@ -57,6 +59,8 @@ const appendClone = ({clonedTemplate, templateClonedCallback, toggleDisabled, se
     self.appendChild(clonedTemplate!);
     if(!toggleDisabled) self.observer!.disconnect;
     self.isCloned = true;
+    delete self.clonedTemplate;
+    self.template!.remove();
 }
 const propActions = [
     linkObserver,
@@ -65,6 +69,7 @@ const propActions = [
 ] as PropAction[];
 export class LaissezDOM extends HTMLElement implements ReactiveSurface, LaissezDOMProps{
     static is = 'laissez-dom';
+    template: HTMLTemplateElement | undefined;
     propActions = propActions;
     observer: IntersectionObserver | undefined;
     reactor = new xc.Rx(this);
@@ -77,15 +82,15 @@ export class LaissezDOM extends HTMLElement implements ReactiveSurface, LaissezD
     noclone: boolean | undefined;
     toggleDisabled: boolean | undefined;
     connectedCallback(){
-        this.style.minHeight = '120px';
-        this.style.display = 'block';
+        //this.style.minHeight = '1000px';
+        //this.style.display = 'block';
         const prev = this.previousElementSibling;
         // if(prev !== null && prev.localName === LaissezDOM.is){
-            setTimeout (() => {
+            // setTimeout (() => {
                 xc.hydrate<LaissezDOMProps>(this, slicedPropDefs, {
                     threshold: 0.01
                 });
-            }, 100);
+            // }, 0);
         // }else{
             // xc.hydrate<LaissezDOMProps>(this, slicedPropDefs, {
             //     threshold: 0.01
