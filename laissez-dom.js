@@ -77,20 +77,10 @@ export class LaissezDOM extends HTMLElement {
         this.self = this;
     }
     connectedCallback() {
-        //this.style.minHeight = '1000px';
-        //this.style.display = 'block';
         const prev = this.previousElementSibling;
-        // if(prev !== null && prev.localName === LaissezDOM.is){
-        // setTimeout (() => {
         xc.hydrate(this, slicedPropDefs, {
             threshold: 0.01
         });
-        // }, 0);
-        // }else{
-        // xc.hydrate<LaissezDOMProps>(this, slicedPropDefs, {
-        //     threshold: 0.01
-        // });            
-        //}
     }
     onPropChange(name, prop, nv) {
         this.reactor.addToQueue(prop, nv);
