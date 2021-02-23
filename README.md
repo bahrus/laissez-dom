@@ -6,7 +6,7 @@
 
 laissez-dom allows a template to be instantiated only after it becomes visible.
 
-Use case I.  Loading a large DOM tree, only part of which is visible.  This use case may have recently been knee-capped by [content-visibility](https://web.dev/content-visibility/), at least if the server produces the large dom tree (to be determined).  But if the content is generated on the client, there are scenarios where laissez-dom does perform quite a bit better.
+Use case I.  Loading a large DOM tree, only part of which is visible.  This use case *may* have recently been knee-capped by [content-visibility](https://web.dev/content-visibility/).  However, unless I'm missing something, laissez-dom greatly outperforms content-visibility.  
 
 Use case II.  If a lazy-loading solution is in place for lazy-loading dependencies required by a web component, then laissez-dom can be useful for that scenario.
 
