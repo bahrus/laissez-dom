@@ -4,7 +4,7 @@ import {xc, ReactiveSurface, PropAction, PropDef, PropDefMap} from 'xtal-element
 const linkObserver = ({threshold, self}: LaissezDOM) => {
     if(self.observer !== undefined) self.observer.disconnect();
     const ioi : IntersectionObserverInit = {
-        threshold: 0.01
+        threshold: threshold
     };
     self.observer = new IntersectionObserver(self.callback.bind(self), ioi);
     self.observer.observe(self);
@@ -67,6 +67,9 @@ const propActions = [
     linkClonedTemplate,
     appendClone
 ] as PropAction[];
+/**
+ * @element laissez-dom
+ */
 export class LaissezDOM extends HTMLElement implements ReactiveSurface, LaissezDOMProps{
     static is = 'laissez-dom';
     template: HTMLTemplateElement | undefined;

@@ -3,7 +3,7 @@ const linkObserver = ({ threshold, self }) => {
     if (self.observer !== undefined)
         self.observer.disconnect();
     const ioi = {
-        threshold: 0.01
+        threshold: threshold
     };
     self.observer = new IntersectionObserver(self.callback.bind(self), ioi);
     self.observer.observe(self);
@@ -69,6 +69,9 @@ const propActions = [
     linkClonedTemplate,
     appendClone
 ];
+/**
+ * @element laissez-dom
+ */
 export class LaissezDOM extends HTMLElement {
     constructor() {
         super(...arguments);
